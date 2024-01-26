@@ -1,7 +1,12 @@
 import React from "react";
+import AllAgents from "./AllAgents";
 
 const AgentsSlot = () => {
-  return <div>AgentsSlot</div>;
+  return (
+    <>
+      <AllAgents />
+    </>
+  );
 };
 
 export default AgentsSlot;
