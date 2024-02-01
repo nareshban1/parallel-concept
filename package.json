@@ -21,5 +21,11 @@
   "packageManager": "pnpm@8.9.0",
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.3.4",
+    "react-hook-form": "^7.50.0",
+    "web": "workspace:^",
+    "zod": "^3.22.4"
   }
 }
