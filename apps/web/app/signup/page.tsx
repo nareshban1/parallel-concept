@@ -1,42 +1,37 @@
 "use client";
 
 import { useForm, SubmitHandler } from "react-hook-form";
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-const SignUpValidation = z.object({
-  userName: z.string({
-    required_error: "Please enter your username",
-  }),
+import { useRouter } from "next/navigation";
+const signUpValidationSchema = z.object({
+  username: z
+    .string()
+    .min(6, { message: "Username must be at least 6 characters long" }),
   email: z
     .string({
       required_error: "Please enter a valid email",
     })
-    .email(),
-  password: z.string({
-    required_error: "Please enter your password",
-  }),
+    .email({ message: "Please enter a valid email" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters long" }),
 });
 
-type Inputs = {
-  userName: string;
-  email: string;
-  password: string;
-};
-
+type ValidationSchema = z.infer<typeof signUpValidationSchema>;
 const page = () => {
   const {
     register,
     handleSubmit,
-    watch,
+    reset,
     formState: { errors },
-  } = useForm<Inputs>({
-    resolver: zodResolver(SignUpValidation),
-    defaultValues: { userName: "", email: "", password: "" },
+  } = useForm<ValidationSchema>({
+    resolver: zodResolver(signUpValidationSchema),
   });
-
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    fetch("localhost:8080/sign-up", {
+  const router = useRouter();
+  const onSubmit: SubmitHandler<ValidationSchema> = (data) => {
+    fetch("http://0.0.0.0:8080/sign-up", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,31 +41,62 @@ const page = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
+        reset();
+        router.replace("/login");
       })
       .catch((error) => {
         console.error("Error:", error);
+        reset();
       });
   };
 
-  console.log(errors);
+  const token = localStorage.getItem("token");
+
+  useLayoutEffect(() => {
+    if (token) router.replace("/");
+  }, [token]);
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3">
-        <span className="flex flex-col">
-          <input {...register("userName")} className="border rounded" />
-          {errors.userName && <p>{errors.userName.message}</p>}
-        </span>
-        <span className="flex flex-col">
-          <input {...register("email")} className="border rounded" />
-          {errors.email && <p>{errors.email.message}</p>}
-        </span>
-        <span className="flex flex-col">
-          <input {...register("password")} className="border rounded" />
-          {errors.password && <p>{errors.password.message}</p>}
-        </span>
-        <button type="submit" className="border rounded">
-          Submit
-        </button>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col">
+        <div className="flex flex-col">
+          <label>Username</label>
+          <div>
+            <input {...register("username")} className="border rounded" />
+          </div>
+          {errors.username && (
+            <span className="text-sm text-red-600">
+              {errors.username.message}
+            </span>
+          )}
+        </div>
+        <div className="flex flex-col">
+          <label>Email</label>
+          <div>
+            <input {...register("email")} className="border rounded" />
+          </div>
+          {errors.email && (
+            <span className="text-sm text-red-600">{errors.email.message}</span>
+          )}
+        </div>
+        <div className="flex flex-col">
+          <label>Password</label>
+          <div>
+            <input {...register("password")} className="border rounded" />
+          </div>
+          {errors.password && (
+            <span className="text-sm text-red-600">
+              {errors.password.message}
+            </span>
+          )}
+        </div>
+        <div className="flex flex-col">
+          <button
+            type="submit"
+            className="border rounded w-fit p-1 bg-green-400 text-sm text-white"
+          >
+            Sign Up
+          </button>
+        </div>
       </form>
     </div>
   );

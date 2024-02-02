@@ -1,4 +1,3 @@
-"use client";
 import { Inter } from "next/font/google";
 import { ReactNode } from "react";
 import "../node_modules/react-grid-layout/css/styles.css";
