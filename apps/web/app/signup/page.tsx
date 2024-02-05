@@ -16,19 +16,44 @@ const signUpValidationSchema = z.object({
     .email({ message: "Please enter a valid email" }),
   password: z
     .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
+    .min(8, { message: "Password must be at least 8 characters long" })
+    .max(16, { message: "Password must not be longer than 16 characters" })
+    .refine((password) => /[A-Z]/.test(password), {
+      message: "Password must contain at least one uppercase letter",
+    })
+    .refine((password) => /[a-z]/.test(password), {
+      message: "Password must contain at least one lowercase letter",
+    })
+    .refine((password) => /[0-9]/.test(password), {
+      message: "Password must contain at least one number",
+    })
+    .refine((password) => /[\W_]/.test(password), {
+      message: "Password must contain at least one symbol",
+    }),
+  testFields: z.array(
+    z.object({
+      name: z.string(),
+    })
+  ),
 });
+import { useFieldArray } from "react-hook-form";
 
 type ValidationSchema = z.infer<typeof signUpValidationSchema>;
 const page = () => {
   const {
     register,
     handleSubmit,
+    control,
     reset,
     formState: { errors },
   } = useForm<ValidationSchema>({
     resolver: zodResolver(signUpValidationSchema),
   });
+  const { fields, append, remove } = useFieldArray({
+    name: "testFields",
+    control,
+  });
+
   const router = useRouter();
   const onSubmit: SubmitHandler<ValidationSchema> = (data) => {
     fetch("http://0.0.0.0:8080/sign-up", {
@@ -98,6 +123,26 @@ const page = () => {
           </button>
         </div>
       </form>
+
+      <p>Field Array Test</p>
+      <div className="flex flex-col">
+        {fields.map((field, index) => (
+          <input
+            key={field.id}
+            {...register(`testFields.${index}.name`)}
+            className="my-1"
+          />
+        ))}
+      </div>
+      <button
+        type="button"
+        className="p-1 bg-red-300"
+        onClick={() => {
+          append({ name: "test" });
+        }}
+      >
+        Add
+      </button>
     </div>
   );
 };

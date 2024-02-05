@@ -32,6 +32,14 @@ export default function Page(): JSX.Element {
       {token ? (
         <main>
           <>This is home page</>
+          <button
+            type="button"
+            onClick={() => {
+              throw new Error("Sentry Frontend Error");
+            }}
+          >
+            Throw error
+          </button>
           <section>
             <h2>Tasks</h2>
             <div className="flex flex-col">
