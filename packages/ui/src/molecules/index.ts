@@ -1,2 +1,1 @@
-import { Form } from "antd";
-export { Form };
+export { Form } from "antd";

@@ -2,7 +2,7 @@
 
 import { Card, Flex, Space, Typography } from "@repo/ui";
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Page(): JSX.Element {
   const token = localStorage.getItem("token");
@@ -38,6 +38,7 @@ export default function Page(): JSX.Element {
         }}
       >
         <Typography.Title level={2}>Tasks</Typography.Title>
+
         <Space
           direction="vertical"
           style={{
@@ -60,9 +61,12 @@ export default function Page(): JSX.Element {
             >
               <Space direction="vertical">
                 {task.taskDescription}
-                <Typography.Text strong>
-                  Assigned to: {task.User ? task.User.userName : "Unassigned"}
-                </Typography.Text>
+                <Space>
+                  <Typography.Text>Assigned to:</Typography.Text>
+                  <Typography.Text strong>
+                    {task.User ? task.User.userName : "Unassigned"}
+                  </Typography.Text>
+                </Space>
               </Space>
             </Card>
           ))}
