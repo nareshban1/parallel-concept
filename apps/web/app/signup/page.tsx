@@ -39,7 +39,13 @@ const SignUp = () => {
   }, []);
 
   return (
-    <Flex justify="center" align="center">
+    <Flex
+      justify="center"
+      align="center"
+      style={{
+        width: "100%",
+      }}
+    >
       <Space direction="vertical">
         <Typography.Title level={2}>Sign Up</Typography.Title>
         <Form

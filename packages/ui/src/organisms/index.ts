@@ -1,2 +1,2 @@
-import { ConfigProvider, Space } from "antd";
-export { ConfigProvider, Space };
+import { ConfigProvider, Space, Card } from "antd";
+export { ConfigProvider, Space, Card };

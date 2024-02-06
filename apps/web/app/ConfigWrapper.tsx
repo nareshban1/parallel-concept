@@ -13,8 +13,6 @@ const ConfigWrapper = ({ children }: { children: ReactNode }) => {
         }}
       >
         <Flex
-          justify="center"
-          align="center"
           style={{
             minHeight: "100vh",
             backgroundColor: "#f0f2f5",

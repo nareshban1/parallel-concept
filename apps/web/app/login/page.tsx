@@ -37,7 +37,13 @@ const Login = () => {
   }, []);
 
   return (
-    <Flex justify="center" align="center">
+    <Flex
+      justify="center"
+      align="center"
+      style={{
+        width: "100%",
+      }}
+    >
       <Space direction="vertical">
         <Typography.Title level={2}>Log In</Typography.Title>
         <Form

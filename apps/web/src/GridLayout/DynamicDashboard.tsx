@@ -1,7 +1,7 @@
 "use client";
 
 import React, { ReactNode, useState } from "react";
-import GridLayoutComponent from "../src/GridLayout";
+import GridLayoutComponent from ".";
 import { Layouts } from "react-grid-layout";
 
 const DynamicDashboard = ({ children }: { children: ReactNode }) => {
@@ -13,14 +13,12 @@ const DynamicDashboard = ({ children }: { children: ReactNode }) => {
     ],
   });
   const [enableEdit, setEnableEdit] = useState<boolean>(true);
+
   return (
     <>
-      Dynamic Layout System Implementation
-      <div className="w-full py-3">
-        <GridLayoutComponent layouts={layout} allowEdit={enableEdit}>
-          {children}
-        </GridLayoutComponent>
-      </div>
+      <GridLayoutComponent layouts={layout} allowEdit={enableEdit}>
+        {children}
+      </GridLayoutComponent>
     </>
   );
 };

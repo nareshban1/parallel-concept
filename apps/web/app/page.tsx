@@ -1,16 +1,17 @@
 "use client";
 
-import { ConfigProvider } from "@repo/ui";
+import { Card, Flex, Space, Typography } from "@repo/ui";
 import { useRouter } from "next/navigation";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 export default function Page(): JSX.Element {
   const token = localStorage.getItem("token");
   const router = useRouter();
   const [tasks, setTasks] = useState([]);
-  useLayoutEffect(() => {
-    if (!token) router.replace("/login");
-  }, [token]);
+
+  // useLayoutEffect(() => {
+  //   if (!token) router.replace("/login");
+  // }, [token]);
 
   const loadTasks = () => {
     fetch("http://0.0.0.0:8080/tasks", {
@@ -30,27 +31,43 @@ export default function Page(): JSX.Element {
   }, []);
   return (
     <>
-      {token ? (
-        <main>
-          <>This is home page</>
-          <button
-            type="button"
-            onClick={() => {
-              throw new Error("Sentry Frontend Error");
-            }}
-          >
-            Throw error
-          </button>
-          <section>
-            <h2>Tasks</h2>
-            <div className="flex flex-col">
-              {tasks?.map((task: any) => (
-                <div className="p-2 border rounded my-2">{task.taskName}</div>
-              ))}
-            </div>
-          </section>
-        </main>
-      ) : null}
+      <main
+        style={{
+          padding: "1rem",
+          width: "100%",
+        }}
+      >
+        <Typography.Title level={2}>Tasks</Typography.Title>
+        <Space
+          direction="vertical"
+          style={{
+            width: "50%",
+          }}
+        >
+          {tasks?.map((task: any) => (
+            <Card
+              title={
+                <>
+                  <Flex justify="space-between" align="center">
+                    <Typography.Text>{task.taskName}</Typography.Text>
+                    <Typography.Text type="secondary">
+                      <>{new Date(task.UpdatedAt).toDateString()}</>
+                    </Typography.Text>
+                  </Flex>
+                </>
+              }
+              key={task.ID}
+            >
+              <Space direction="vertical">
+                {task.taskDescription}
+                <Typography.Text strong>
+                  Assigned to: {task.User ? task.User.userName : "Unassigned"}
+                </Typography.Text>
+              </Space>
+            </Card>
+          ))}
+        </Space>
+      </main>
     </>
   );
 }
