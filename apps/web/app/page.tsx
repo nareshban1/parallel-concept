@@ -1,5 +1,6 @@
 "use client";
 
+import { ConfigProvider } from "@repo/ui";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 

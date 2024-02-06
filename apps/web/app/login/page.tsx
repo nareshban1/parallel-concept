@@ -1,92 +1,89 @@
 "use client";
 
-import { useForm, SubmitHandler } from "react-hook-form";
-import React, { useLayoutEffect } from "react";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Flex, Form, Input, Space, Typography } from "@repo/ui";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-const validationSchema = z.object({
-  email: z
-    .string({
-      required_error: "Please enter a valid email",
-    })
-    .email({ message: "Please enter a valid email" }),
-  password: z
-    .string({
-      required_error: "Please enter a valid password",
-    })
-    .min(6, { message: "Password must be at least 6 characters long" }),
-});
+import { useLayoutEffect } from "react";
 
-type ValidationSchema = z.infer<typeof validationSchema>;
-const page = () => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<ValidationSchema>({
-    resolver: zodResolver(validationSchema),
-  });
+interface FormSchema {
+  email: string;
+  password: string;
+}
+
+const Login = () => {
   const router = useRouter();
-  const onSubmit: SubmitHandler<ValidationSchema> = (data) => {
+  const [form] = Form.useForm<FormSchema>();
+  const handleSubmit = (values: FormSchema) => {
     fetch("http://0.0.0.0:8080/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(values),
     })
       .then((response) => response.json())
       .then((data) => {
-        localStorage.setItem("token", data.token);
-        reset();
-        router.replace("/");
+        console.log(data);
+        router.replace("/login");
       })
       .catch((error) => {
         console.error("Error:", error);
-        reset();
       });
   };
-  const token = localStorage.getItem("token");
+
   useLayoutEffect(() => {
+    const token = localStorage?.getItem("token");
     if (token) router.replace("/");
-  }, [token]);
+  }, []);
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex gap-3 flex-col">
-        <div className="flex flex-col">
-          <label>Email</label>
-          <div>
-            <input {...register("email")} className="border rounded" />
-          </div>
-          {errors.email && (
-            <span className="text-sm text-red-600">{errors.email.message}</span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <label>Password</label>
-          <div>
-            <input {...register("password")} className="border rounded" />
-          </div>
-          {errors.password && (
-            <span className="text-sm text-red-600">
-              {errors.password.message}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <button
-            type="submit"
-            className="border rounded w-fit p-1 bg-green-400 text-sm text-white"
+    <Flex justify="center" align="center">
+      <Space direction="vertical">
+        <Typography.Title level={2}>Log In</Typography.Title>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          style={{ minWidth: 300, maxWidth: 600 }}
+        >
+          <Form.Item
+            name={"email"}
+            label="Email"
+            rules={[
+              {
+                required: true,
+                message: "Email is required!",
+              },
+              {
+                type: "email",
+                message: "Email is not valid",
+              },
+            ]}
           >
-            Log in
-          </button>
-        </div>
-      </form>
-    </div>
+            <Input placeholder="Email" />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[
+              {
+                required: true,
+                message: "Please input your password!",
+              },
+            ]}
+          >
+            <Input.Password placeholder="Password" />
+          </Form.Item>
+          <Button type="primary" htmlType="submit">
+            Log In
+          </Button>
+        </Form>
+        <Typography.Text>
+          Don't have an account? <Link href={"/signup"}>Sign Up</Link>
+        </Typography.Text>
+      </Space>
+    </Flex>
   );
 };
 
-export default page;
+export default Login;

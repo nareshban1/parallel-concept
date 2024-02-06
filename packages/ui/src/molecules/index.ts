@@ -1,3 +1,2 @@
-import Card from "./Card";
-
-export { Card };
+import { Form } from "antd";
+export { Form };
