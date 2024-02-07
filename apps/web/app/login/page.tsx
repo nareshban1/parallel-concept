@@ -24,7 +24,8 @@ const Login = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        router.replace("/login");
+        localStorage.setItem("token", data.token);
+        router.replace("/");
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -50,7 +51,7 @@ const Login = () => {
           form={form}
           layout="vertical"
           onFinish={handleSubmit}
-          style={{ minWidth: 300, maxWidth: 600 }}
+          style={{ minWidth: 300, maxWidth: 300 }}
         >
           <Form.Item
             name={"email"}

@@ -52,7 +52,7 @@ const SignUp = () => {
           form={form}
           layout="vertical"
           onFinish={handleSubmit}
-          style={{ minWidth: 300, maxWidth: 600 }}
+          style={{ minWidth: 300, width: 300 }}
         >
           <Form.Item
             name={"username"}

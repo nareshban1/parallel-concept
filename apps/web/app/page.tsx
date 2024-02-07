@@ -1,76 +1,40 @@
-"use client";
+import { Metadata } from "next";
+import AllFiles from "./tasks/AllFiles";
+import CreateTaskModal from "./tasks/CreateTaskModal";
+import { revalidateTag } from "next/cache";
+const getAllAgents = async () => {
+  "use server";
+  const res = await fetch("http://0.0.0.0:8080/tasks", {
+    next: { tags: ["allTasks"] },
+  });
+  const data = await res.json();
+  return data.data;
+};
 
-import { Card, Flex, Space, Typography } from "@repo/ui";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-
-export default function Page(): JSX.Element {
-  const token = localStorage.getItem("token");
-  const router = useRouter();
-  const [tasks, setTasks] = useState([]);
-
-  // useLayoutEffect(() => {
-  //   if (!token) router.replace("/login");
-  // }, [token]);
-
-  const loadTasks = () => {
-    fetch("http://0.0.0.0:8080/tasks", {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setTasks(data.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+export const metadata: Metadata = {
+  title: "Demo Todo App",
+  description:
+    "This is a demo todo app to learn next js 14 with go backend and ant design and more ",
+};
+export default async function Page() {
+  const allTasks = await getAllAgents();
+  const revalidateTasks = async () => {
+    "use server";
+    revalidateTag("allTasks");
   };
-
-  useEffect(() => {
-    loadTasks();
-  }, []);
   return (
     <>
       <main
         style={{
           padding: "1rem",
           width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          flexGrow: 1,
         }}
       >
-        <Typography.Title level={2}>Tasks</Typography.Title>
-
-        <Space
-          direction="vertical"
-          style={{
-            width: "50%",
-          }}
-        >
-          {tasks?.map((task: any) => (
-            <Card
-              title={
-                <>
-                  <Flex justify="space-between" align="center">
-                    <Typography.Text>{task.taskName}</Typography.Text>
-                    <Typography.Text type="secondary">
-                      <>{new Date(task.UpdatedAt).toDateString()}</>
-                    </Typography.Text>
-                  </Flex>
-                </>
-              }
-              key={task.ID}
-            >
-              <Space direction="vertical">
-                {task.taskDescription}
-                <Space>
-                  <Typography.Text>Assigned to:</Typography.Text>
-                  <Typography.Text strong>
-                    {task.User ? task.User.userName : "Unassigned"}
-                  </Typography.Text>
-                </Space>
-              </Space>
-            </Card>
-          ))}
-        </Space>
+        <AllFiles allTasks={allTasks} />
+        <CreateTaskModal revalidateTasks={revalidateTasks} />
       </main>
     </>
   );
