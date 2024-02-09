@@ -1,5 +1,6 @@
 "use client";
 import { Button, ConfigProvider, Flex, Space } from "@repo/ui";
+import { getTextByLanguage } from "@repo/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -45,6 +46,7 @@ const ConfigWrapper = ({ children }: { children: ReactNode }) => {
               </Space>
             ) : null}
           </Flex>
+          {getTextByLanguage({ en: "Hello", jp: "こんにちは" })}
           {children}
         </Flex>
       </ConfigProvider>

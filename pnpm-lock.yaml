@@ -94,6 +94,9 @@ importers:
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@sentry/nextjs':
         specifier: ^7.99.0
         version: 7.99.0(next@14.0.4)(react@18.2.0)

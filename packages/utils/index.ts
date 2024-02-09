@@ -7,3 +7,16 @@ export const removeEmptyValuesFromObject = <T extends Record<string, unknown>>(
     }
     return acc;
   }, {} as Partial<T>);
+
+export function getTextByLanguage(
+  textsByLocale: Record<string, string>
+): string {
+  const supportedLocales = Object.keys(textsByLocale);
+  const defaultLocale = "jp"; // This can be adjusted to suit the application's default language
+  const pathSegments = window.location.pathname.split("/");
+  let locale = pathSegments[1] || defaultLocale;
+
+  locale = supportedLocales.includes(locale) ? locale : defaultLocale;
+
+  return textsByLocale[locale] || textsByLocale[defaultLocale] || "";
+}
